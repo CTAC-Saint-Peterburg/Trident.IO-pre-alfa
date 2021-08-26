@@ -1,0 +1,55 @@
+﻿<!--NOT READY pre-alfa Build v-0.1 -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Trident.IO</title>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <script src="EngineTrident.js"></script>
+    <script src="forFront-end.js"></script>
+    <link rel="stylesheet" type="text/css" href="TridentIO.css" />
+    <div id="greeting" class="greeting"><h1>Hello friend! Welcome to Trident.IO</h1></div>
+    <div id="main" class="main">
+        <div id="Ablock" class="Ablock">
+            
+        </div>
+        <div id="optionBlock" class="optionBlock">
+            <div id="nameAndButton" class="nameAndButton">
+                <h2>Enter your name;)</h2>
+                <input type="text" onchange="Player.text = this.value" />
+                <button onclick="PlayGame()">Play</button>
+                <button onclick="confirm('coming soon')">Connect with friend</button>
+            </div>
+            <div id="skinShop" class="skinShop">
+                <h2>Skin & Shop</h2>
+                <div id="shopOne" class="shopUnit"></div>
+                <div id="shopTwo" class="shopUnit"></div>
+                <div id="shopThree" class="shopUnit"></div>
+                <div id="shopFour" class="shopUnit"></div>
+                <div id="shopFive" class="shopUnit"></div>
+
+            </div>
+        </div>
+        <div id="leaderBoardBlock" class="leaderBoardBlock">
+            <div>
+            <h3>Top Day</h3>
+            <ol>
+                <li>template</li>
+                <li>template</li>
+                <li>template</li>
+            </ol>
+            </div>
+            <div>
+            <h3>Top All Time</h3>
+                 <ol>
+                     <li>template</li>
+                     <li>template</li>
+                     <li>template</li>
+            </ol>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

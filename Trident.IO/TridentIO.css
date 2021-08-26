@@ -1,0 +1,87 @@
+﻿body {
+    background-color: #fcff28;
+    font-family: Arial;
+    color: #ffff;
+}
+canvas {
+    margin: 0 0 0 0;
+    position: fixed;
+    z-index: 1;
+    visibility: hidden;
+}
+.greeting {
+    margin: 2% 0 0 0;
+    position: static;
+    color: #007ea7;
+}
+.greeting > h1 {
+    text-align: center;
+    font-size: 3em;
+}
+.main {
+    position: static;
+    margin: 0 0 0 0;
+    height: 60vh;
+    width: 100vw;
+    border-radius: 25px;
+
+}
+.nameAndButton {
+    position: static;
+    margin: 2% 4% 0 4%;
+    float: left;
+    height: 15vh;
+    width: 50%;
+    background-color: #00171f;
+    border-radius: 25px;
+}
+.nameAndButton > h2 {
+    font-size: 2em;
+    margin: 2% 0 0 0;
+    text-align: center;
+    color: #ffffff;
+}
+.nameAndButton > input {
+    margin: 2vh 0 0 10%;
+}
+.skinShop {
+    display: -webkit-inline-box;
+    position: relative;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    margin: 2% 4% 0 4%;
+    float: left;
+    height: 20vh;
+    width: 50%;
+    background-color: #00171f;
+    border-radius: 25px;
+}
+.skinShop > h2 {
+     font-size: 2em;
+     margin: 2% 0 0 0;
+     text-align: center;
+     color: #ffffff;
+}
+.shopUnit {
+    display: inline-block;
+    float: left;
+    margin: 2% 2% 0 2%;
+    height: 15vh;
+    width: 15vh;
+    border-radius: 25px;
+    background-color: white;
+}
+.leaderBoardBlock {
+    position: relative;
+    display: flex;
+    margin: 2% 4% 0 4%;
+    float: left;
+    height: 20vh;
+    width: 50%;
+    background-color: #00171f;
+    border-radius: 25px;
+}
+    .leaderBoardBlock > div > h3 {
+        margin: 5% 4% 0 20%;
+    }
