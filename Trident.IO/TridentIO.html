@@ -8,48 +8,36 @@
 <body>
     <canvas id="canvas"></canvas>
     <script src="EngineTrident.js"></script>
-    <script src="forFront-end.js"></script>
+    <script src="Design.js"></script>
     <link rel="stylesheet" type="text/css" href="TridentIO.css" />
-    <div id="greeting" class="greeting"><h1>Hello friend! Welcome to Trident.IO</h1></div>
-    <div id="main" class="main">
-        <div id="Ablock" class="Ablock">
-            
+    <header class="header">
+        <div class="logo"></div>
+        <div class="welcome-text">
+            <h1 class="header-h1">Welcome to Trident.IO</h1>
         </div>
-        <div id="optionBlock" class="optionBlock">
-            <div id="nameAndButton" class="nameAndButton">
-                <h2>Enter your name;)</h2>
-                <input type="text" onchange="Player.text = this.value" />
-                <button onclick="PlayGame()">Play</button>
-                <button onclick="confirm('coming soon')">Connect with friend</button>
+    </header>
+    <main class="main">
+        <section class="game">
+            <div class="menu-model">
+                <div class="menu-model-show">
+                <span class="menu-model-nickname"></span>
+                </div>
             </div>
-            <div id="skinShop" class="skinShop">
-                <h2>Skin & Shop</h2>
-                <div id="shopOne" class="shopUnit"></div>
-                <div id="shopTwo" class="shopUnit"></div>
-                <div id="shopThree" class="shopUnit"></div>
-                <div id="shopFour" class="shopUnit"></div>
-                <div id="shopFive" class="shopUnit"></div>
+            <div class="input-game"></div>
+            <div class="buttons-game">
+                <button>play</button>
+                <button>play with friend</button>
+            </div>
+        </section>
+        <section class="skin-shop">
 
-            </div>
-        </div>
-        <div id="leaderBoardBlock" class="leaderBoardBlock">
-            <div>
-            <h3>Top Day</h3>
-            <ol>
-                <li>template</li>
-                <li>template</li>
-                <li>template</li>
-            </ol>
-            </div>
-            <div>
-            <h3>Top All Time</h3>
-                 <ol>
-                     <li>template</li>
-                     <li>template</li>
-                     <li>template</li>
-            </ol>
-            </div>
-        </div>
-    </div>
+        </section>
+        <section class="leader-board">
+
+        </section>
+    </main>
+    <footer class="footer">
+
+    </footer>
 </body>
 </html>

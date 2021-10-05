@@ -1,5 +1,6 @@
 ﻿body {
-    background-color: #fcff28;
+    margin: 0;
+    background-color: #ffffff;
     font-family: Arial;
     color: #ffff;
 }
@@ -9,79 +10,76 @@ canvas {
     z-index: 1;
     visibility: hidden;
 }
-.greeting {
-    margin: 2% 0 0 0;
-    position: static;
-    color: #007ea7;
+.header {
+    margin: 0 auto;
+    top: 0px;
+    display: flex;
+    align-items: center;
+    max-width: 1440px;
+    height: 300px;
+    border-radius: 50px;
+    box-shadow: 1px 9px 20px 0px #d0c5ff;
+    background-color: #ffff;
 }
-.greeting > h1 {
-    text-align: center;
-    font-size: 3em;
+.logo {
+    height: 150px;
+    width: 150px;
+    background-color: blue;
+    position: relative;
+    left: 50px;
+    border-radius: 50%;
+    border: 8px solid #9146c1;
+}
+.welcome-text {
+    position: relative;
+    left: 150px;
+    height: 150px;
+    width: 800px;
+    background-color: #ffff;
+}
+.header-h1 {
+    font-size: 60px;
+    margin: 40px 0px 0 60px;
+    color: #4062bb;
 }
 .main {
-    position: static;
-    margin: 0 0 0 0;
-    height: 60vh;
-    width: 100vw;
-    border-radius: 25px;
-
-}
-.nameAndButton {
-    position: static;
-    margin: 2% 4% 0 4%;
-    float: left;
-    height: 15vh;
-    width: 50%;
-    background-color: #00171f;
-    border-radius: 25px;
-}
-.nameAndButton > h2 {
-    font-size: 2em;
-    margin: 2% 0 0 0;
-    text-align: center;
-    color: #ffffff;
-}
-.nameAndButton > input {
-    margin: 2vh 0 0 10%;
-}
-.skinShop {
-    display: -webkit-inline-box;
     position: relative;
-    overflow-x: scroll;
-    overflow-y: hidden;
-    white-space: nowrap;
-    margin: 2% 4% 0 4%;
-    float: left;
-    height: 20vh;
-    width: 50%;
-    background-color: #00171f;
-    border-radius: 25px;
+    margin: 0 auto;
+    top: 50px;
+    max-width: 1440px;
+    height: 3000px;
+    border-radius: 50px;
+    background-color: #ffffff;
+    box-shadow:  5px 5px 10px 4px #d0c5ff;
+    
 }
-.skinShop > h2 {
-     font-size: 2em;
-     margin: 2% 0 0 0;
-     text-align: center;
-     color: #ffffff;
+section {
+    position: relative;
+    margin: 50px 0 0 100px;
+    top: 50px;
+    height: 500px;
+    width: 1200px;
+    background-color: red;
 }
-.shopUnit {
-    display: inline-block;
-    float: left;
-    margin: 2% 2% 0 2%;
-    height: 15vh;
-    width: 15vh;
-    border-radius: 25px;
-    background-color: white;
-}
-.leaderBoardBlock {
+.game {
     position: relative;
     display: flex;
-    margin: 2% 4% 0 4%;
-    float: left;
-    height: 20vh;
-    width: 50%;
-    background-color: #00171f;
-    border-radius: 25px;
 }
-    .leaderBoardBlock > div > h3 {
-        margin: 5% 4% 0 20%;
-    }
+.menu-model {
+    width: 400px;
+    height: 100%;
+}
+.menu-model-show {
+    height: 300px;
+    width: 300px;
+    border-radius: 50%;
+    border: 8px solid black;
+}
+.input-game {
+    width: 400px;
+    height: 100%;
+}
+.buttons-game {
+    width: 400px;
+    height: 100%;
+}

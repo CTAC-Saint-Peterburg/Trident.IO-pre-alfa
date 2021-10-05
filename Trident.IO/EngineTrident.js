@@ -5,22 +5,22 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 //------------------------------------
 //Переменная с параметрами Игрока под управлением пользователя
-const Player = {
-    y: 400,
-    x: 600,
+let Player = {
+    y: 2000,
+    x: 2000,
     size: 150,
     text: "Player",
     color: "yellow",
     imgSkin: "",
     id: "1",
-    moveUp(x) { Player.y -= x; },
+    moveUp(x) { Player.y -= x;},
     moveDown(x) { Player.y += x;},
-    moveLeft(x) { Player.x -= x; },
-    moveRight(x) { Player.x += x; },
+    moveLeft(x) { Player.x -= x;},
+    moveRight(x) { Player.x += x;},
 
 };
 //Переменная с параметрами Трезубца под управлением рлоьзователя
-const Trident = {
+let Trident = {
     y: Player.y,
     x: Player.x,
     rotate: 0,
@@ -36,8 +36,8 @@ const Trident = {
 function canvasSize() {
   //  canvas.width = innerWidth; //ширина всего окна
   //  canvas.height = innerHeight; //высота всего окна
-    canvas.width = 2000;
-    canvas.height = 2000;
+    canvas.width = 4000;
+    canvas.height = 4000;
 };
 //-----------------------------------------------------------
 //Функция отрисовки Player
@@ -94,14 +94,21 @@ function PlayerControl() {
 //Функция стрельбы трезубцем !требует доработки 
 let shotY = {};
 let shotX = {};
+let disX;
+let disY;
     window.addEventListener("keyup", (event) => {
         if (event.code == 'KeyQ') {
             TridentDrawStatus = false;
+            Trident.x = Player.x;
+            Trident.y = Player.y;
             shotY = clickY;
             shotX = clickX;
-            TridentShotAngle = Math.atan2(clickY - Player.y, clickX - Player.x);
-            TridentVelocityX = Math.cos(TridentShotAngle) * 7;
-            TridentVelocityY = Math.sin(TridentShotAngle) * 7;
+            TridentShotAngle = Math.atan2(clickY - Trident.y, clickX - Trident.x);
+            console.log(TridentShotAngle);
+            TridentVelocityX = Math.cos(TridentShotAngle);
+            console.log(TridentVelocityX);
+            TridentVelocityY = Math.sin(TridentShotAngle);
+            console.log(TridentVelocityY);
 
         };
     });
@@ -125,11 +132,9 @@ function TridentShot() {
         ctx.lineTo(400, -40); //можно устранить менусовые значения при проблемах
         ctx.lineWidth = 15;
         ctx.stroke();
-        if (shotX < Trident.x - Player.size) Trident.x -= TridentVelocityX;
-        if (shotX > Trident.x + Player.size) Trident.x += TridentVelocityX;
-        if (shotY < Trident.y - Player.size) Trident.y -= TridentVelocityY;
-        if (shotY > Trident.y + Player.size) Trident.y += TridentVelocityY;
-        setTimeout(() => { TridentDrawStatus = true; Trident.x = Player.x }, 10000); //через 10 секунда восстанавливаем значение
+        Trident.x += TridentVelocityX * 5;
+        Trident.y += TridentVelocityY * 5;
+        setTimeout(() => { TridentDrawStatus = true; Trident.x = Player.x }, 20000); //через 10 секунда восстанавливаем значение
     };
 };
 //-------------------------------------------------------
@@ -153,12 +158,12 @@ function Leap() {
 //--------------------------------------------------------
 //Фунция глобальной отрисовки других функций DrawAll();
 function DrawAll() {
-    canvasSize();
-    PlayerDraw();
-    TridentDraw();
-    TridentShot();
-    Leap();
-    PlayerControl();
+    canvasSize(); //функция задаёт параметры canvas
+    PlayerDraw(); //функция отрисовки игрока
+    TridentDraw(); //функция отрислвки трезубца
+    TridentShot(); //функция отрисовки после вызова
+    Leap(); //функция ускорения "w"
+    PlayerControl(); //функция управления круга игрока
     requestAnimationFrame(DrawAll); //№1 вызов запускает цикл перерисовки DrawAll
 };
 //-------------------------------------------------------
