@@ -20,12 +20,12 @@
         <section class="game">
             <div class="menu-model">
                 <div class="menu-model-show">
-                <span class="menu-model-nickname">Player</span>
+                <h2 class="menu-model-nickname" id="test" value="">Player</h2>
                 </div>
             </div>
             <div class="input-game-div">
                 <h2 class="input-game-div-h2">Enter your name</h2>
-                <input type="text" class="input-game" value="player">
+                <input type="text" class="input-game" value="player" onchange="Player.text = this.value; document.getElementById('test').innerHTML = Player.text;" >
             </div>
             <div class="buttons-game">
                 <button class="Button-play">play</button>
