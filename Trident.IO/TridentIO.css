@@ -64,22 +64,81 @@ section {
 .game {
     position: relative;
     display: flex;
+    border-radius: 30px;
+    box-shadow: 0px 1px 10px 4px #cac3e9;
+    background-color: #ffffff;
+}
+
+
+}
+
+
 }
 .menu-model {
     width: 400px;
     height: 100%;
 }
 .menu-model-show {
+    margin: 100px 0 0 20px;
     height: 300px;
     width: 300px;
     border-radius: 50%;
     border: 8px solid black;
+    background-color: #ffffff;
 }
-.input-game {
+.menu-model-nickname {
+    position: relative;
+    left: 100px;
+    top: 120px;
+    font-size: 40px;
+    color: black;
+}
+.input-game-div {
+    margin: 0 0 0 50px;
     width: 400px;
     height: 100%;
+}
+.input-game-div-h2 {
+    margin: 20px 0 0 0;
+    color: black;
+    font-size: 38px;
+    text-align: center;
+
+}
+.input-game {
+    margin: 150px 0 0 0;
+    height: 100px;
+    width: 380px;
+    border: 4px solid #d0c5ff;
+    border-radius: 35px;
+    font-size: 32px;
+    text-align: center;
 }
 .buttons-game {
     width: 400px;
     height: 100%;
+}
+.Button-play {
+    margin: 220px 0 0 20px;
+    width: 250px;
+    height: 100px;
+    text-decoration: none;
+    font-size: 30px;
+    color: #ffffff;
+    background-color: #42c342;
+    border-radius: 30px;
+    outline: none;
+    border: none;
+}
+.Button-play-with-friend {
+    margin: 20px 0 0 20px;
+    width: 250px;
+    height: 100px;
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 30px;
+    background-color: #5498df;
+    border-radius: 30px;
+    outline: none;
+    border: none;
 }
