@@ -10,13 +10,13 @@
     <script src="EngineTrident.js"></script>
     <script src="Design.js"></script>
     <link rel="stylesheet" type="text/css" href="TridentIO.css" />
-    <header class="header">
+    <header class="header" id="header">
         <div class="logo"></div>
         <div class="welcome-text">
             <h1 class="header-h1">Welcome to Trident.IO</h1>
         </div>
     </header>
-    <main class="main">
+    <main class="main" id="main">
         <section class="game">
             <div class="menu-model">
                 <div class="menu-model-show">
@@ -28,19 +28,189 @@
                 <input type="text" class="input-game" value="player" onchange="Player.text = this.value; document.getElementById('test').innerHTML = Player.text;" >
             </div>
             <div class="buttons-game">
-                <button class="Button-play">play</button>
+                <button class="Button-play" onclick="PlayGame()">play</button>
                 <button class="Button-play-with-friend">play with friend</button>
             </div>
         </section>
         <section class="skin-shop">
+            <div class="skin-shop-left">
+                <svg xmlns="http://www.w3.org/2000/svg" class="skin-shop-svgleft" viewBox="3 1 6 8">
+                    <path d="M 3 5 L 9 1 L 9 9" fill="#000000"/>
+                  </svg>
+            </div>
+            <div class="skin-shop-options">
+                <h2 class="skin-shop-h2">Skins & shop</h2>
+                <div class="skin-shop-content"></div>
+                <button class="skin-shop-button">select</button>
+            </div>
+            <div class="skin-shop-right">
+                <svg xmlns="http://www.w3.org/2000/svg" class="skin-shop-svgright" viewBox="3 1 6 8">
+                    <path d="M 3 5 L 9 1 L 9 9" fill="#000000"/>
+                  </svg>
+            </div>
 
         </section>
         <section class="leader-board">
-
+            <div class="leader-board-day">
+                <h2 class="leader-board-h2">Leaders of the Day</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nickname</th>
+                            <th>scores</th>
+                            <th>wins</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>&nbsp;User1</td>
+                            <td>444</td>
+                            <td>&nbsp;211</td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;User2</td>
+                            <td>233</td>
+                            <td>&nbsp;200</td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;User3</td>
+                            <td>232</td>
+                            <td>&nbsp;190</td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;User4</td>
+                            <td>219</td>
+                            <td>&nbsp;187</td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;User5</td>
+                            <td>200</td>
+                            <td>&nbsp;166</td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;User6</td>
+                            <td>198</td>
+                            <td>&nbsp;147</td>
+                        </tr>
+                        <tr>
+                            <td><span style="font-style: normal; font-weight: 400;">User7</span></td>
+                            <td>190</td>
+                            <td>&nbsp;144</td>
+                        </tr>
+                        <tr>
+                            <td><span style="font-style: normal; font-weight: 400;">User8</span></td>
+                            <td>187</td>
+                            <td>139&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td><span style="font-style: normal; font-weight: 400;">User9</span></td>
+                            <td>167&nbsp;</td>
+                            <td>&nbsp;134</td>
+                        </tr>
+                        <tr>
+                            <td><span style="font-style: normal; font-weight: 400;">User10</span></td>
+                            <td>155</td>
+                            <td>109&nbsp;</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="leader-board-alltime">
+                <div class="leader-board-h2">Leaders of All time</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nickname</th>
+                            <th>scores</th>
+                            <th>wins</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>&nbsp;User1</td>
+                            <td>444</td>
+                            <td>&nbsp;211</td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;User2</td>
+                            <td>233</td>
+                            <td>&nbsp;200</td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;User3</td>
+                            <td>232</td>
+                            <td>&nbsp;190</td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;User4</td>
+                            <td>219</td>
+                            <td>&nbsp;187</td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;User5</td>
+                            <td>200</td>
+                            <td>&nbsp;166</td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;User6</td>
+                            <td>198</td>
+                            <td>&nbsp;147</td>
+                        </tr>
+                        <tr>
+                            <td><span style="font-style: normal; font-weight: 400;">User7</span></td>
+                            <td>190</td>
+                            <td>&nbsp;144</td>
+                        </tr>
+                        <tr>
+                            <td><span style="font-style: normal; font-weight: 400;">User8</span></td>
+                            <td>187</td>
+                            <td>139&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td><span style="font-style: normal; font-weight: 400;">User9</span></td>
+                            <td>167&nbsp;</td>
+                            <td>&nbsp;134</td>
+                        </tr>
+                        <tr>
+                            <td><span style="font-style: normal; font-weight: 400;">User10</span></td>
+                            <td>155</td>
+                            <td>109&nbsp;</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="leader-board-playerstats">
+                <h2 class="leader-board-h2">My stats</h2>
+                <div class="leader-board-display">
+                <div class="menu-model-show-stats">
+                    <h2 class="menu-model-nickname" id="test" value="">Player</h2>
+                  </div>
+                  <div class="leader-board-player">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>scores</th>
+                                <th>wins</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>444</td>
+                                <td>&nbsp;211</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                  </div>
+                  </div>
+                  </div>
+                </div>
+            </div>
         </section>
     </main>
-    <footer class="footer">
-
+    <footer class="footer" id="footer">
+        <div><h2 class="footer-h2">2021 Trident IO</h2></div>
+        <div></div>
+        <div></div>
     </footer>
 </body>
 </html>
