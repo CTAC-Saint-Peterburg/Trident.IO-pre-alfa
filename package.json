@@ -1,0 +1,16 @@
+{
+  "name": "trident.io-third-build",
+  "version": "1.0.0",
+  "description": "add multiplayer",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Stanislav Seleznev",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^4.3.1"
+  }
+}
