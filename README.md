@@ -1,4 +1,4 @@
-# Trident.IO-pre-alfa (!!!switch branch to Alfa!!! <07.11.2021>)
+# Trident.IO-pre-alfa (!!!switch branch to Alfa!!! <20.11.2021>)
 I'm experimenting with canvas)
 Not much is ready for today;(
 Run the html file, enter your name, click play, and now you are already controlling the character you have two special abilities shot Q and jump with acceleration W.
@@ -22,5 +22,13 @@ Trident.IO-pre-alfa v2
  7. add server.js
  8. add simple multiplayer for testing
  <07.11.2021>
+ ------------------------------------------
+ Trident.IO alfa v 0.0.9 the basic mechanics are almost working
+ 1. Fix camera
+ 2. Fix trident functions
+ 3. Server now reads the position of the trident
+ 4. Add new GUI
+ <20.11.2021>
+ ---------------------------------------------
 
 
