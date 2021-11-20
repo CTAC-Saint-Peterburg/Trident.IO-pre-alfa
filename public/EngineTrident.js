@@ -327,6 +327,7 @@ function Multiplayer() {
     socket.emit('cords', enemy); //- отправка данных о координатах на сервер
     socket.on('tridentServer', incomeTrident);
     socket.emit('tridentServer', enemyTrident);
+    socket.on('serverGameover', incomeServerGameover);
     
 };
 function income(enemy) {
@@ -386,11 +387,14 @@ function setup(playerSetup) {
 function serverGameOver() {
     if(!gameOverStatus) {
     gameOverStatus = true;
+    socket.emit('serverGameover', gameOverStatus);
+    console.log(gameOverStatus, + "1");
 }
 };
-function hes(p) {
-    console.log(p);
-}
+function incomeServerGameover(serverGOVData) {
+    console.log("mda"+ serverGOVData);
+    gameOverStatus = serverGOVData;
+};
 function DrawAll() {
     ctx.clearRect(-1000, -1000, 2000, 2000);
     ctx.translate(-canvasX,-canvasY);
