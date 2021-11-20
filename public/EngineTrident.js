@@ -20,7 +20,7 @@ let playerDraw = () => {
 };
 let tridentDraw = () => {
     ctx.beginPath();
-    ctx.translate(trident.x, trident.y);
+    ctx.translate(trident.x - canvasX, trident.y - canvasY);
     if(rotate) {trident.moveRotate(Math.atan2(clientY - canvas.height / 2, clientX - canvas.width / 2) * 180 / Math.PI)};
     ctx.rotate(trident.rotate * Math.PI / 180);
     ctx.strokeStyle = '#37393a';
@@ -37,6 +37,7 @@ let tridentDraw = () => {
     ctx.stroke();
     ctx.resetTransform();
     ctx.closePath();
+
 };
 let testY = 500;
 let testX = 500;
@@ -53,6 +54,7 @@ let test = () => {
 let fiveArc = () => {
     ctx.beginPath();
     ctx.arc(30,50, 50, 0, 2* Math.PI, false);
+    ctx.fillStyle = "red";
     ctx.fill();
     ctx.closePath();
     ctx.beginPath();
@@ -75,6 +77,25 @@ let fiveArc = () => {
     ctx.closePath();
 
 };
+let enemyTridentReceivedDraw = () => {
+    ctx.beginPath();
+    ctx.translate(enemyTridentReceived.x, enemyTridentReceived.y);
+    ctx.rotate(enemyTridentReceived.rotate * Math.PI / 180);
+    ctx.strokeStyle = '#37393a';
+    ctx.moveTo(170, 0); 
+    ctx.lineTo(320, 0); 
+    ctx.lineTo(320, 40);
+    ctx.lineTo(400, 40);
+    ctx.moveTo(320, 0);
+    ctx.lineTo(400, 0);
+    ctx.moveTo(320, 0);
+    ctx.lineTo(320, -40);
+    ctx.lineTo(400, -40); 
+    ctx.lineWidth = 15;
+    ctx.stroke();
+    ctx.resetTransform();
+    ctx.closePath();
+};
 let Player = {x: 500, y: 500, size: 100, text: "Player",};
 let movementAngle;
 let canvasX = 0;
@@ -95,6 +116,8 @@ let timerTridentShot = 0;
 let timerLeap = 0;
 let statusQ = 0;
 let statusW = 0;
+let gameOverStatus = false;
+let gameResult; //- в работе
 let scorePlaces = {
     first: Player.text,
     second: "unnamed",
@@ -102,12 +125,24 @@ let scorePlaces = {
     fourth: "unnamed",
 };
 let enemy;
+let enemyTrident;
+let enemyTridentReceived = {
+    x: "",
+    y: "",
+    rotate: "",
+};
 let enemyReceived = {
     x: "",
     y: "",
     size: "",
     text: "enemy/Вражина",
 };
+let gameOverText = {
+    lose: "You Lose",
+    win: "Victory",
+    kills: 0,
+};
+let gameOverStatusText = gameOverText.lose;
 canvas.addEventListener("click", (event) => {
     clientY = event.clientY;
     clientX = event.clientX;
@@ -269,8 +304,8 @@ function Collision() {
         collisionX += tridentmoveX *10;
         collisionY += tridentmoveY *10;
     };
-    if(collisionX - 10 < 80 && collisionX + 10 > -20) {
-        if(collisionY - 10 < 100 && collisionY + 10 > 0) {alert("crash")};
+    if(collisionX - 10 < enemyReceived.x + enemyReceived.size && collisionX + 10 > enemyReceived.x - enemyReceived.size) {
+        if(collisionY - 10 < enemyReceived.y + enemyReceived.size && collisionY + 10 > enemyReceived.y - enemyReceived.size) {serverGameOver(), gameOverStatusText = gameOverText.win, gameOverText.kills++, timerTridentShot = 200};
     };
     };
     // console.log(Player.y);
@@ -283,8 +318,15 @@ function Multiplayer() {
         size: Player.size,
         text: Player.text,
     };
-    socket.on('cords', income); //- получение данных с сервера
-    socket.emit('cords', enemy); //- отправка данных на сервер
+    enemyTrident = {
+        x: trident.x,
+        y: trident.y,
+        rotate: trident.rotate,
+    };
+    socket.on('cords', income); //- получение данных о координатах с сервера
+    socket.emit('cords', enemy); //- отправка данных о координатах на сервер
+    socket.on('tridentServer', incomeTrident);
+    socket.emit('tridentServer', enemyTrident);
     
 };
 function income(enemy) {
@@ -294,24 +336,79 @@ function income(enemy) {
         size: enemy.size,
         text: enemy.text,
     }
-    console.log(enemy);
+    // console.log(enemy);
 };
+function incomeTrident(enemyTrident) {
+    enemyTridentReceived = {
+        x: enemyTrident.x,
+        y: enemyTrident.y,
+        rotate: enemyTrident.rotate,
+    }
+    // console.log(enemyTrident);
+};
+function gameOverUI() {
+    if(gameOverStatus) {
+    ctx.beginPath()
+    ctx.rect(0, 0, 1000, 1000);
+    ctx.fillStyle = "rgba(57, 47, 90, 0.5)";
+    ctx.fill();
+    ctx.beginPath();
+    ctx.beginPath();
+    ctx.rect(200, 200, 600, 400);
+    ctx.fillStyle = "black";
+    ctx.fill();
+    ctx.closePath();
+    ctx.font = "50px Arial";
+    ctx.fillStyle = "white";
+    ctx.fillText(gameOverStatusText, 400, 280);
+    ctx.font = "50px Arial";
+    ctx.fillStyle = "orange";
+    // ctx.textAlign = 'center'; - потом настрою
+    ctx.fillText("Kills:" + gameOverText.kills, 430, 380);
+    ctx.closePath();
+    startPlayerControl = false;
+    }
+};
+function gameSetup() {
+    console.log("setup complete");
+    socket.on('serverSetup', setup);
+    
+};
+function setup(playerSetup) {
+    console.log(playerSetup);
+    socket.emit('serverSetup');
+    if(playerSetup > 1) {
+        canvasY = -800;
+        Player.y = -300;
+        trident.y = -300;
+    }
+};
+function serverGameOver() {
+    if(!gameOverStatus) {
+    gameOverStatus = true;
+}
+};
+function hes(p) {
+    console.log(p);
+}
 function DrawAll() {
     ctx.clearRect(-1000, -1000, 2000, 2000);
     ctx.translate(-canvasX,-canvasY);
     fiveArc();
     test();
     mapBorder();
+    enemyTridentReceivedDraw();
+    tridentDraw();
     PlayerControl();
     TridentShot();
-    tridentDraw();
     scoreUI();
     cooldownUI();
     playerDraw();
+    gameOverUI();
     Leap();
     Collision();
     Multiplayer();
     requestAnimationFrame(DrawAll);
 };
-window.onload = DrawAll();
+window.onload = DrawAll(), gameSetup();
 //проблема с перемещением координат смещения angle
