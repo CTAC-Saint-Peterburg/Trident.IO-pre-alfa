@@ -30,5 +30,8 @@ Trident.IO-pre-alfa v2
  4. Add new GUI
  <20.11.2021>
  ---------------------------------------------
+ Trident.IO alfa v 0.1.0 now you can lose or win the game
+ 1. server now sends the result of the game
+ ---------------------------------------------
 
 
