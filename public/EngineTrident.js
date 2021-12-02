@@ -4,7 +4,7 @@ canvas.height = 1000;
 const ctx = canvas.getContext('2d');
 var socket;
 socket = io.connect('http://localhost:3000');
-let playerDraw = () => {
+let playerDraw = () => { //-отрисовка игрока (поверх конваса)
     ctx.beginPath();
     ctx.resetTransform();
     ctx.arc(canvas.width / 2, canvas.height / 2, 100, 0, 2 * Math.PI, false);
@@ -18,7 +18,7 @@ let playerDraw = () => {
     ctx.fillText(Player.text, canvas.width / 2 - 50, canvas.height / 2);
     ctx.closePath();
 };
-let tridentDraw = () => {
+let tridentDraw = () => { //-отрисовка трезубца (поверх конваса)
     ctx.beginPath();
     ctx.translate(trident.x - canvasX, trident.y - canvasY);
     if(rotate) {trident.moveRotate(Math.atan2(clientY - canvas.height / 2, clientX - canvas.width / 2) * 180 / Math.PI)};
@@ -39,9 +39,7 @@ let tridentDraw = () => {
     ctx.closePath();
 
 };
-let testY = 500;
-let testX = 500;
-let test = () => {
+let humanPlayer = () => { //-отрисовка игрока (под слоем который рисуется в playerDraw)
     ctx.beginPath();
     ctx.arc(Player.x + angleX, Player.y + angleY, 100, 0, 2 * Math.PI, false);
     ctx.fillStyle = "red";
@@ -51,36 +49,94 @@ let test = () => {
     ctx.stroke();
     ctx.closePath();
 };
-let fiveArc = () => {
+let countPlayers = 4; //-количество игроков
+let proxySetup; //-зугрузка стартовой позиции
+let allEnemies = [{},{},{},{},{}]; //-массив всех игроков
+let startSetup = [{cX: -1000, cY: 0, pX: -500, pY: 500, tX: -500, tY: 500},{cX: 1000, cY: 0, pX: 1500, pY: 500, tX: 1500, tY: 500}, {cX: -1000, cY: -1200, pX: -500, pY: -700, tX: -500, tY: -700}, {cX: 1000, cY: -1200, pX: 1500, pY: -700, tX: 1500, tY: -700}]; //-стартовые координаты
+let allTridents = [{},{},{},{}]; //-массив всех трезубцев
+let proxyTridents; //-трезубцы для (мултиплеера)
+let checkVar; //-переменная для проверки коллизий
+let Player = {x: 500, y: 500, size: 100, text: "Player",}; //-переменная хранит начальные координаты игрока
+let movementAngle; //-переменная хранит функцию Math.atan2 создаёт арктангенс между игроком и точкой на экране куда был осущёствлён клик
+let canvasX = 0; //-камера канваса(область видимости по  X)
+let canvasY = 0; //-камера канваса(область видимости по  Y)
+let clientX; //-клик клиента по X
+let clientY; //-клик клиента по Y
+let angleX = 0; //-косинус от movementAngle (осуществляем движение на канвасе)
+let angleY = 0; //-синус от movementAngle (осуществляем движение на канвасе)
+let startPlayerControl = false;
+let trident = { x: 500, y: 500,rotate: 27, moveRotate(x) { trident.rotate = x; }}; //-обьект начальных данных трезубца
+let rotate = true; //-проверка на необходимость вычисления угла отрисовки трезубца
+let Qpressed = false; //-проверка нажата ли Q
+let LeapStatus = false; //-провека нажата ли W
+let tridentmoveY; //-движение трезубца по Y
+let tridentmoveX; //-движение трезубца по X
+let leapActive = 1; //-множитель ускорения по нажатию W (начальное 1 при активации 4)
+let timerTridentShot = 0;
+let timerLeap = 0;
+let statusQ = 0;
+let statusW = 0;
+let gameOverStatus = false;
+let gameResult; //- в работе
+class StartsetupPositon {
+    constructor(cX,cY,pX,pY,tX,tY) {
+        this.cX = cX;
+        this.cY = cY;
+        this.pX = pX;
+        this.pY = pY;
+        this.tX = tX;
+        this.tY = tY;
+    }
+    load() {
+        canvasX = this.cX;
+        canvasY = this.cY;
+        Player.x = this.pX;
+        Player.y = this.pY;
+        trident.x = this.tX;
+        trident.y = this.tY;
+}
+};
+class Enemyspawner {
+    constructor(eX,eY,eSize,eColor, eText) {
+        this.x = eX;
+        this.y = eY;
+        this.size = eSize;
+        this.color = eColor;
+        this.text = eText;
+    }
+    draw() {
     ctx.beginPath();
-    ctx.arc(30,50, 50, 0, 2* Math.PI, false);
-    ctx.fillStyle = "red";
-    ctx.fill();
-    ctx.closePath();
-    ctx.beginPath();
-    ctx.arc(enemyReceived.x,enemyReceived.y, enemyReceived.size, 0, 2* Math.PI, false);
-    ctx.fillStyle = "pink";
+    ctx.arc(this.x,this.y, this.size, 0, 2* Math.PI, false);
+    ctx.fillStyle = this.color;
     ctx.fill();
     ctx.lineWidth = 5;
-    ctx.strokeStyle = 'rgb(254, 173, 39)';
     ctx.fillStyle = '#004777';
     ctx.font = "40px Arial";
-    ctx.fillText(enemyReceived.text, enemyReceived.x - 50, enemyReceived.y);
+    ctx.fillText(this.text, this.x - 50, this.y);
     ctx.closePath();
-    ctx.beginPath();
-    ctx.arc(470,90, 50, 0, 2* Math.PI, false);
-    ctx.fill();
-    ctx.closePath();
-    ctx.beginPath();
-    ctx.arc(810,666, 50, 0, 2* Math.PI, false);
-    ctx.fill();
-    ctx.closePath();
-
+    }
 };
-let enemyTridentReceivedDraw = () => {
+let allEnemiesDraw = () => {
+    allEnemies[0] = new Enemyspawner(300,200,400, "brown", "blah blah blah");
+    allEnemies[1] = new Enemyspawner(enemyReceived[0].x,enemyReceived[0].y,enemyReceived[0].size, "pink", enemyReceived[0].text);
+    allEnemies[2] = new Enemyspawner(enemyReceived[1].x,enemyReceived[1].y,enemyReceived[1].size, "pink", enemyReceived[1].text);
+    allEnemies[3] = new  Enemyspawner(enemyReceived[2].x,enemyReceived[2].y,enemyReceived[2].size, "pink", enemyReceived[2].text);
+    allEnemies[4] = new Enemyspawner(enemyReceived[3].x,enemyReceived[3].y,enemyReceived[3].size, "pink", enemyReceived[3].text);
+    for(let i = 0; i <= countPlayers; i++) {
+    allEnemies[i].draw();
+    }
+};
+class Tridentsspawner {
+    constructor(tX, tY, tRotate) {
+        this.x = tX;
+        this.y = tY;
+        this.rotate = tRotate;
+    }
+    draw() {
     ctx.beginPath();
-    ctx.translate(enemyTridentReceived.x, enemyTridentReceived.y);
-    ctx.rotate(enemyTridentReceived.rotate * Math.PI / 180);
+    ctx.resetTransform();
+    ctx.translate(this.x - canvasX, this.y - canvasY);
+    ctx.rotate(this.rotate * Math.PI / 180);
     ctx.strokeStyle = '#37393a';
     ctx.moveTo(170, 0); 
     ctx.lineTo(320, 0); 
@@ -95,29 +151,34 @@ let enemyTridentReceivedDraw = () => {
     ctx.stroke();
     ctx.resetTransform();
     ctx.closePath();
+    }
 };
-let Player = {x: 500, y: 500, size: 100, text: "Player",};
-let movementAngle;
-let canvasX = 0;
-let canvasY = 0;
-let clientX;
-let clientY;
-let angleX = 0;
-let angleY = 0;
-let startPlayerControl = false;
-let trident = { x: 500, y: 500,rotate: 27, moveRotate(x) { trident.rotate = x; }};
-let rotate = true;
-let Qpressed = false;
-let LeapStatus = false;
-let tridentmoveY;
-let tridentmoveX;
-let leapActive = 1;
-let timerTridentShot = 0;
-let timerLeap = 0;
-let statusQ = 0;
-let statusW = 0;
-let gameOverStatus = false;
-let gameResult; //- в работе
+let enemyTridentReceivedDraw = () => {
+    for(let i =0; i < 4; i++) {
+    allTridents[i] = new Tridentsspawner(enemyTridentReceived[i].x, enemyTridentReceived[i].y, enemyTridentReceived[i].rotate);
+    allTridents[i].draw();
+    }
+};
+class Collisionchecker {
+    constructor(eX,eY,eSize) {
+        this.x = eX; //- координаты соперника
+        this.y = eY;
+        this.size = eSize;
+    }
+    collision() {
+        if(Qpressed) {
+            let collisionX = trident.x;
+            let collisionY = trident.y;
+            for(let i = 0; i < 35; i++) { 
+                collisionX += tridentmoveX *10;
+                collisionY += tridentmoveY *10;
+            };
+            if(collisionX - 10 < this.x + this.size && collisionX + 10 > this.x - this.size) {
+                if(collisionY - 10 < this.y + this.size && collisionY + 10 > this.y - this.size) {serverGameOver(), gameOverStatusText = gameOverText.win, gameOverText.kills++, timerTridentShot = 200};
+            };
+            };
+    }
+};
 let scorePlaces = {
     first: Player.text,
     second: "unnamed",
@@ -126,17 +187,8 @@ let scorePlaces = {
 };
 let enemy;
 let enemyTrident;
-let enemyTridentReceived = {
-    x: "",
-    y: "",
-    rotate: "",
-};
-let enemyReceived = {
-    x: "",
-    y: "",
-    size: "",
-    text: "enemy/Вражина",
-};
+let enemyTridentReceived = [{x: 0,y: 0,size: 0,rotate: 0},{x: 0,y: 0,size: 0,rotate: 0},{x: 0,y: 0,size: 0,rotate: 0},{x: 0,y: 0,size: 0,rotate: 0}];
+let enemyReceived = [{x: 0,y: 0,size: 0,text: "enemy/Вражина"},{x: 0,y: 0,size: 0,text: "enemy/Вражина"},{x: 0,y: 0,size: 0,text: "enemy/Вражина"},{x: 0,y: 0,size: 0,text: "enemy/Вражина"}];
 let gameOverText = {
     lose: "You Lose",
     win: "Victory",
@@ -296,32 +348,26 @@ function Leap() {
  };
 function Collision() {
     if(Player.x - Player.size < -1000 || Player.x + Player.size > 2000) {startPlayerControl = false};
-    if(Player.y - Player.size < -1000 || Player.y + Player.size > 1000) {startPlayerControl = false}; 
-    if(Qpressed) {
-    let collisionX = trident.x;
-    let collisionY = trident.y;
-    for(let i = 0; i < 35; i++) { 
-        collisionX += tridentmoveX *10;
-        collisionY += tridentmoveY *10;
-    };
-    if(collisionX - 10 < enemyReceived.x + enemyReceived.size && collisionX + 10 > enemyReceived.x - enemyReceived.size) {
-        if(collisionY - 10 < enemyReceived.y + enemyReceived.size && collisionY + 10 > enemyReceived.y - enemyReceived.size) {serverGameOver(), gameOverStatusText = gameOverText.win, gameOverText.kills++, timerTridentShot = 200};
-    };
-    };
-    // console.log(Player.y);
-
+    if(Player.y - Player.size < -1000 || Player.y + Player.size > 1000) {startPlayerControl = false};
+    for(let i = 0; i < 4; i++) {
+    checkVar = new Collisionchecker(enemyReceived[i].x,enemyReceived[i].y,enemyReceived[i].size);
+    checkVar.collision();
+    } 
 };
+let proxID; //-123 123
 function Multiplayer() {
     enemy = {
         x: Player.x,
         y: Player.y,
         size: Player.size,
         text: Player.text,
+        proxID: proxID,
     };
     enemyTrident = {
         x: trident.x,
         y: trident.y,
         rotate: trident.rotate,
+        proxID: proxID,
     };
     socket.on('cords', income); //- получение данных о координатах с сервера
     socket.emit('cords', enemy); //- отправка данных о координатах на сервер
@@ -330,21 +376,15 @@ function Multiplayer() {
     socket.on('serverGameover', incomeServerGameover);
     
 };
-function income(enemy) {
-    enemyReceived = {
-        x: enemy.x,
-        y: enemy.y,
-        size: enemy.size,
-        text: enemy.text,
-    }
+function income(serverPlayers) {
+    // console.log(serverPlayers);
+    enemyReceived = serverPlayers;
     // console.log(enemy);
 };
-function incomeTrident(enemyTrident) {
-    enemyTridentReceived = {
-        x: enemyTrident.x,
-        y: enemyTrident.y,
-        rotate: enemyTrident.rotate,
-    }
+function incomeTrident(enemyTrident, serverTridents) {
+    proxyTridents = serverTridents;
+    // console.log(serverTridents);
+    enemyTridentReceived = serverTridents;
     // console.log(enemyTrident);
 };
 function gameOverUI() {
@@ -376,13 +416,16 @@ function gameSetup() {
     
 };
 function setup(playerSetup) {
+    proxID = playerSetup;
     console.log(playerSetup);
     socket.emit('serverSetup');
-    if(playerSetup > 1) {
-        canvasY = -800;
-        Player.y = -300;
-        trident.y = -300;
-    }
+    proxySetup = new StartsetupPositon(startSetup[playerSetup].cX,startSetup[playerSetup].cY, startSetup[playerSetup].pX,startSetup[playerSetup].pY, startSetup[playerSetup].tX,startSetup[playerSetup].tY);
+    proxySetup.load();
+    // if(playerSetup > 1) {
+    //     canvasY = -800;
+    //     Player.y = -300;
+    //     trident.y = -300;
+    // }
 };
 function serverGameOver() {
     if(!gameOverStatus) {
@@ -398,8 +441,9 @@ function incomeServerGameover(serverGOVData) {
 function DrawAll() {
     ctx.clearRect(-1000, -1000, 2000, 2000);
     ctx.translate(-canvasX,-canvasY);
-    fiveArc();
-    test();
+    Multiplayer();
+    allEnemiesDraw();
+    humanPlayer();
     mapBorder();
     enemyTridentReceivedDraw();
     tridentDraw();
@@ -411,7 +455,6 @@ function DrawAll() {
     gameOverUI();
     Leap();
     Collision();
-    Multiplayer();
     requestAnimationFrame(DrawAll);
 };
 window.onload = DrawAll(), gameSetup();
