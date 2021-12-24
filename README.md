@@ -1,4 +1,4 @@
-# Trident.IO-pre-alfa (!!!switch branch to Alfa!!! <02.12.2021>)
+# Trident.IO-pre-alfa (!!!switch branch to Alfa!!! <24.12.2021> Current Version 0.3.0)
 I'm experimenting with canvas)
 Not much is ready for today;(
 Run the html file, enter your name, click play, and now you are already controlling the character you have two special abilities shot Q and jump with acceleration W.
@@ -41,5 +41,9 @@ Trident.IO-pre-alfa v2
  5. refactor client-server side
  <02.12.2021>
  ------------------------------
-
+Trident.IO alfa v 0.3.0 code now readable in Russian
+1. add new cycles
+2. add comments
+3. rename variables
+-----------------------------------------------------
 
