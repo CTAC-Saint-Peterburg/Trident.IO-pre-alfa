@@ -48,6 +48,9 @@ let gameOverText = {
     win: "Victory",
     kills: 0,
 };
+let offsetForPlayersAccepted = new Array();
+let acceptGame = 1;
+let waitingPlayersStatus = true;
 //- конец списка переменных
 //- рисуем игрока (поверх)
 let playerDraw = () => { //-отрисовка игрока (поверх конваса)
@@ -61,7 +64,8 @@ let playerDraw = () => { //-отрисовка игрока (поверх кон
     ctx.stroke();
     ctx.fillStyle = '#004777';
     ctx.font = "40px Arial";
-    ctx.fillText(Player.text, canvas.width / 2 - 50, canvas.height / 2);
+    ctx.textAlign = 'center';
+    ctx.fillText(Player.text, canvas.width / 2, canvas.height / 2);
     ctx.closePath();
 };
 //- рисуем трезубец (поверх)
@@ -132,7 +136,8 @@ class Enemyspawner {
     ctx.lineWidth = 5;
     ctx.fillStyle = '#004777';
     ctx.font = "40px Arial";
-    ctx.fillText(this.text, this.x - 50, this.y);
+    ctx.textAlign = 'center';
+    ctx.fillText(this.text, this.x, this.y);
     ctx.closePath();
     }
 };
@@ -184,9 +189,29 @@ class Collisionchecker {
             };
     }
 };
+class PlayersAcceptedGame {
+    constructor(offsetForPlayersAccepted,color) {
+        this.offset = offsetForPlayersAccepted;
+        this.color = color;
+        if(this.color == undefined) {this.color = 'white'};
+    ctx.beginPath();
+    ctx.arc(this.offset, 500, 50, 0, 2* Math.PI, false);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+    ctx.lineWidth = 20;
+    ctx.strokeStyle = this.color;
+    ctx.stroke();
+    ctx.fill();
+    ctx.lineWidth = 10;
+    ctx.strokeStyle = 'black';
+    ctx.stroke();
+    ctx.fill();
+    ctx.closePath();
+    }
+};
 //- конец списка классов
 let enemyTridentReceivedDraw = () => {
-    for(let i =0; i < 4; i++) {
+    for(let i =0; i < countPlayers; i++) {
     allTridents[i] = new Tridentsspawner(enemyTridentReceived[i].x, enemyTridentReceived[i].y, enemyTridentReceived[i].rotate);
     allTridents[i].draw();
     }
@@ -204,9 +229,11 @@ let allEnemiesDraw = () => {
 //- слушатели событий
 let gameOverStatusText = gameOverText.lose;
 canvas.addEventListener("click", (event) => {
+    if(!waitingPlayersStatus) {
     clientY = event.clientY;
     clientX = event.clientX;
     startPlayerControl = true;
+    }
 });
 window.addEventListener("keyup", (event) => {
     if (event.code == 'KeyQ') {
@@ -282,14 +309,16 @@ function Leap() {
     ctx.rect(800, 10, 200, 170);
     ctx.fillStyle = "rgba(57, 47, 90, 0.3)";
     ctx.fill();
-    ctx.font = "25px Arial";
+    ctx.font = "20px Arial";
     ctx.fillStyle = "#fff8f0";
-    ctx.fillText("Players in game", 830, 40);
+    ctx.textAlign = 'center';
+    ctx.fillText("Players in game", 900, 40);
     ctx.font = "18px Arial";
-    ctx.fillText("1-" + scorePlaces.first, 850, 70);
-    ctx.fillText("2-" + scorePlaces.second, 850, 100);
-    ctx.fillText("3-" + scorePlaces.third, 850, 130);
-    ctx.fillText("4-" + scorePlaces.fourth, 850, 160);
+    ctx.textAlign = 'center';
+    ctx.fillText("1-" + scorePlaces.first, 900, 70);
+    ctx.fillText("2-" + scorePlaces.second, 900, 100);
+    ctx.fillText("3-" + scorePlaces.third, 900, 130);
+    ctx.fillText("4-" + scorePlaces.fourth, 900, 160);
     ctx.closePath();
  };
  let cooldownUI = () => {
@@ -319,7 +348,8 @@ function Leap() {
     ctx.beginPath();
     ctx.font = "30px Arial";
     ctx.fillStyle = "black";
-    ctx.fillText("Q", 680, 820);
+    ctx.textAlign = 'center';
+    ctx.fillText("Q", 690, 820);
     ctx.closePath();
     };
     if(!LeapStatus) {
@@ -337,14 +367,16 @@ function Leap() {
     ctx.beginPath();
     ctx.font = "30px Arial";
     ctx.fillStyle = "black";
-    ctx.fillText("W", 825, 820);
+    ctx.textAlign = 'center';
+    ctx.fillText("W", 840, 820);
     ctx.closePath();
     };
     ctx.beginPath();
     ctx.fill();
     ctx.font = "70px Arial";
     ctx.fillStyle = "white";
-    ctx.fillText(statusQ, 670, 760);
+    ctx.textAlign = 'center';
+    ctx.fillText(statusQ, 690, 760);
     ctx.closePath();
     if(timerTridentShot == 0){statusQ = ""};
     if(timerTridentShot >= 1 && timerTridentShot < 50) {statusQ = 3};
@@ -354,7 +386,8 @@ function Leap() {
     ctx.fill();
     ctx.font = "70px Arial";
     ctx.fillStyle = "white";
-    ctx.fillText(statusW, 820, 760);
+    ctx.textAlign = 'center';
+    ctx.fillText(statusW, 840, 760);
     ctx.closePath();
     if(timerLeap == 0){statusW = ""};
     if(timerLeap >= 1 && timerLeap < 50) {statusW = 3};
@@ -364,7 +397,7 @@ function Leap() {
 function Collision() {
     if(Player.x - Player.size < -1000 || Player.x + Player.size > 2000) {startPlayerControl = false};
     if(Player.y - Player.size < -1000 || Player.y + Player.size > 1000) {startPlayerControl = false};
-    for(let i = 0; i < 4; i++) {
+    for(let i = 0; i < countPlayers; i++) {
     checkVar = new Collisionchecker(enemyReceived[i].x,enemyReceived[i].y,enemyReceived[i].size,enemyReceived[i].proxID);
     checkVar.collision();
     } 
@@ -391,7 +424,7 @@ function Multiplayer() {
     
 };
 function incomePlayersCords(serverPlayers) {
-    for(let i = 0; i < 4; i++) {
+    for(let i = 0; i < countPlayers; i++) {
         if(serverPlayers[i].dead == proxID) {Player.x = '', Player.y = '', Player.size = '', Player.text = ''}
     }
     // console.log(serverPlayers);
@@ -400,7 +433,7 @@ function incomePlayersCords(serverPlayers) {
 };
 function incomeTridentsCords(enemyTrident, serverTridents) {
     proxyTridents = serverTridents;
-    for(let i = 0; i < 4; i++) {
+    for(let i = 0; i < countPlayers; i++) {
         if(serverTridents[i].dead == proxID) {trident.x = '', trident.y = '', trident.size = '', trident.text = ''}
     }
     // console.log(serverTridents);
@@ -421,10 +454,11 @@ function gameOverUI() {
     ctx.closePath();
     ctx.font = "50px Arial";
     ctx.fillStyle = "white";
+    ctx.textAlign = 'center';
     ctx.fillText(gameOverStatusText, 400, 280);
     ctx.font = "50px Arial";
     ctx.fillStyle = "orange";
-    // ctx.textAlign = 'center'; - потом настрою
+    ctx.textAlign = 'center';
     ctx.fillText("Kills:" + gameOverText.kills, 430, 380);
     ctx.closePath();
     startPlayerControl = false;
@@ -453,6 +487,41 @@ function incomeServerGameover(serverPlayersLiveStatus) {
     let test = serverPlayersLiveStatus;
     if(test==proxID) {gameOverStatus = true;}
 };
+function gameAccepted() {
+    if(waitingPlayersStatus) {
+    if(countPlayers > 2) {
+    ctx.beginPath()
+    ctx.rect(0, 0, 1000, 1000);
+    ctx.fillStyle = "rgba(57, 47, 90, 0.5)";
+    ctx.fill();
+    ctx.closePath();
+
+    ctx.beginPath();
+    ctx.rect(100, 300, 800, 400);
+    ctx.fillStyle = "black";
+    ctx.fill();
+    ctx.font = "50px Arial";
+    ctx.fillStyle = "orange";
+    ctx.textAlign = 'center';
+    ctx.fillText("Waiting for the Players...", 500, 380);
+    ctx.closePath();
+//-цикл колличества отрисововки
+let acceptColor = new Array();
+let acceptDraw = new Array();
+for(i = 0; i < acceptGame; i++) {
+    acceptColor[i] = 'green';
+}
+for(i = 0; i < 4; i++) {
+    offsetForPlayersAccepted[i] = 200 + 200 * i;
+    acceptDraw[i] = new PlayersAcceptedGame(offsetForPlayersAccepted[i], acceptColor[i]);
+}
+for(let i = 0; i < countPlayers; i++) {
+    if(enemyReceived[i].text != "enemy/Вражина" && enemyReceived[i].text != "") {acceptGame = i + 1};
+}
+}
+if(acceptGame == 4) {waitingPlayersStatus = false};
+};
+};
 function DrawAll() {
     ctx.clearRect(-1000, -1000, 2000, 2000);
     ctx.translate(-canvasX,-canvasY);
@@ -470,6 +539,7 @@ function DrawAll() {
     gameOverUI();
     Leap();
     Collision();
+    gameAccepted();
     requestAnimationFrame(DrawAll);
 };
 //-запуск цикла всех функций и определения начальных координат игрока

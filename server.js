@@ -9,6 +9,7 @@ var io = socket(server);
 //-список переменных сервера
 let playersCountServer = 4; //- (не больше 4) отчёт идёт с нуля 
 let playerSetup = 0; //- сетап позиции старта
+let acceptServer = 0;
 let serverGOVData;
 let serverTridents = [{x: 0,y: 0,size: 0,rotate: 0},{x: 0,y: 0,size: 0,rotate: 0},{x: 0,y: 0,size: 0,rotate: 0},{x: 0,y: 0,size: 0,rotate: 0}];
 let serverPlayers = [{x: 0,y: 0,size: 0,text: "enemy/Вражина"},{x: 0,y: 0,size: 0,text: "enemy/Вражина"},{x: 0,y: 0,size: 0,text: "enemy/Вражина"},{x: 0,y: 0,size: 0,text: "enemy/Вражина"},];
