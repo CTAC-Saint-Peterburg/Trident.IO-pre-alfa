@@ -7,6 +7,7 @@ const ctx = canvas.getContext('2d');
 var socket;
 socket = io.connect('http://localhost:3000');
 //- список всех переменых
+let clientSideRoom; //roomsUpdate
 let countPlayers = 4; //-количество игроков
 let proxySetup; //-зугрузка стартовой позиции
 let allEnemies = new Array(); //-массив всех игроков
@@ -41,6 +42,8 @@ let proxliveStatus;
 let scorePlaces;
 let enemy;
 let enemyTrident;
+let timerClock = 0; //- таймер внутренних часов
+let needClock = false; //-нужны ли часы
 let enemyTridentReceived = [{x: 0,y: 0,size: 0,rotate: 0},{x: 0,y: 0,size: 0,rotate: 0},{x: 0,y: 0,size: 0,rotate: 0},{x: 0,y: 0,size: 0,rotate: 0}];
 let enemyReceived = [{x: 0,y: 0,size: 0,text: "enemy/Вражина"},{x: 0,y: 0,size: 0,text: "enemy/Вражина"},{x: 0,y: 0,size: 0,text: "enemy/Вражина"},{x: 0,y: 0,size: 0,text: "enemy/Вражина"}];
 let gameOverText = {
@@ -49,8 +52,9 @@ let gameOverText = {
     kills: 0,
 };
 let offsetForPlayersAccepted = new Array();
-let acceptGame = 1;
+let acceptGame = Player.Pcords + 1;
 let waitingPlayersStatus = true;
+let hitMessage;
 //- конец списка переменных
 //- рисуем игрока (поверх)
 let playerDraw = () => { //-отрисовка игрока (поверх конваса)
@@ -184,7 +188,7 @@ class Collisionchecker {
                 collisionY += tridentmoveY *10;
             };
             if(collisionX - 10 < this.x + this.size && collisionX + 10 > this.x - this.size) {
-                if(collisionY - 10 < this.y + this.size && collisionY + 10 > this.y - this.size) {proxliveStatus = this.id,sendToServerGameOver(), gameOverStatusText = gameOverText.win, gameOverText.kills++, timerTridentShot = 200};
+                if(collisionY - 10 < this.y + this.size && collisionY + 10 > this.y - this.size) {proxliveStatus = this.id,sendToServerGameOver(),  gameOverText.kills++, timerTridentShot = 200, hitMessage = new HitTargetMessage(this.id,), needClock = true};
             };
             };
     }
@@ -213,17 +217,21 @@ class PlayersAcceptedGame {
 let enemyTridentReceivedDraw = () => {
     for(let i =0; i < countPlayers; i++) {
     allTridents[i] = new Tridentsspawner(enemyTridentReceived[i].x, enemyTridentReceived[i].y, enemyTridentReceived[i].rotate);
+    if( i != proxID) {
     allTridents[i].draw();
+    }
     }
 };
 let allEnemiesDraw = () => {
-    allEnemies[0] = new Enemyspawner(300,200,400, "brown", "blah blah blah");
-    allEnemies[1] = new Enemyspawner(enemyReceived[0].x,enemyReceived[0].y,enemyReceived[0].size, "pink", enemyReceived[0].text);
-    allEnemies[2] = new Enemyspawner(enemyReceived[1].x,enemyReceived[1].y,enemyReceived[1].size, "pink", enemyReceived[1].text);
-    allEnemies[3] = new  Enemyspawner(enemyReceived[2].x,enemyReceived[2].y,enemyReceived[2].size, "pink", enemyReceived[2].text);
-    allEnemies[4] = new Enemyspawner(enemyReceived[3].x,enemyReceived[3].y,enemyReceived[3].size, "pink", enemyReceived[3].text);
-    for(let i = 0; i <= countPlayers; i++) {
+    // allEnemies[0] = new Enemyspawner(300,200,400, "brown", "blah blah blah");
+    allEnemies[0] = new Enemyspawner(enemyReceived[0].x,enemyReceived[0].y,enemyReceived[0].size, "pink", enemyReceived[0].text);
+    allEnemies[1] = new Enemyspawner(enemyReceived[1].x,enemyReceived[1].y,enemyReceived[1].size, "pink", enemyReceived[1].text);
+    allEnemies[2] = new  Enemyspawner(enemyReceived[2].x,enemyReceived[2].y,enemyReceived[2].size, "pink", enemyReceived[2].text);
+    allEnemies[3] = new Enemyspawner(enemyReceived[3].x,enemyReceived[3].y,enemyReceived[3].size, "pink", enemyReceived[3].text);
+    for(let i = 0; i < countPlayers; i++) {
+        if(i != proxID) {
     allEnemies[i].draw();
+        }
     }
 };
 //- слушатели событий
@@ -423,21 +431,21 @@ function Multiplayer() {
     socket.on('listenGameOver', incomeServerGameover);
     
 };
-function incomePlayersCords(serverPlayers) {
+function incomePlayersCords(serverAllRooms) {
     for(let i = 0; i < countPlayers; i++) {
-        if(serverPlayers[i].dead == proxID) {Player.x = '', Player.y = '', Player.size = '', Player.text = ''}
+        if(serverAllRooms[0][0][i].dead == proxID) {Player.x = '', Player.y = '', Player.size = '', Player.text = ''}
     }
-    // console.log(serverPlayers);
-    enemyReceived = serverPlayers;
+    // console.log(serverAllRooms[0][0]);
+    enemyReceived = serverAllRooms[0][0];
     // console.log(enemy);
 };
-function incomeTridentsCords(enemyTrident, serverTridents) {
-    proxyTridents = serverTridents;
+function incomeTridentsCords(enemyTrident, serverAllRooms) {
+    // proxyTridents = serverTridents;
     for(let i = 0; i < countPlayers; i++) {
-        if(serverTridents[i].dead == proxID) {trident.x = '', trident.y = '', trident.size = '', trident.text = ''}
+        if(serverAllRooms[0][1][i].dead == proxID) {trident.x = '', trident.y = '', trident.size = '', trident.text = ''}
     }
-    // console.log(serverTridents);
-    enemyTridentReceived = serverTridents;
+    // console.log(serverAllRooms[0][1]);
+    enemyTridentReceived = serverAllRooms[0][1];
     // console.log(enemyTrident);
 };
 function gameOverUI() {
@@ -455,11 +463,11 @@ function gameOverUI() {
     ctx.font = "50px Arial";
     ctx.fillStyle = "white";
     ctx.textAlign = 'center';
-    ctx.fillText(gameOverStatusText, 400, 280);
+    ctx.fillText(gameOverStatusText, 500, 280);
     ctx.font = "50px Arial";
     ctx.fillStyle = "orange";
     ctx.textAlign = 'center';
-    ctx.fillText("Kills:" + gameOverText.kills, 430, 380);
+    ctx.fillText("Kills:" + gameOverText.kills, 500, 380);
     ctx.closePath();
     startPlayerControl = false;
     }
@@ -470,10 +478,11 @@ function gameSetup() {
     
 };
 function setup(playerSetup) {
-    proxID = playerSetup;
-    console.log(playerSetup);
-    socket.emit('listenServerSetup');
-    proxySetup = new StartsetupPositon(startSetup[playerSetup].cX,startSetup[playerSetup].cY, startSetup[playerSetup].pX,startSetup[playerSetup].pY, startSetup[playerSetup].tX,startSetup[playerSetup].tY);
+    proxID = playerSetup.Pcords;
+    clientSideRoom = playerSetup.currentRoom; //roomsUpdate
+    console.log(playerSetup.Pcords);
+    socket.emit('listenServerSetup', clientSideRoom);
+    proxySetup = new StartsetupPositon(startSetup[playerSetup.Pcords].cX,startSetup[playerSetup.Pcords].cY, startSetup[playerSetup.Pcords].pX,startSetup[playerSetup.Pcords].pY, startSetup[playerSetup.Pcords].tX,startSetup[playerSetup.Pcords].tY);
     proxySetup.load();
 };
 function sendToServerGameOver() {
@@ -522,6 +531,46 @@ for(let i = 0; i < countPlayers; i++) {
 if(acceptGame == 4) {waitingPlayersStatus = false};
 };
 };
+//-внутренние часы
+function internalClock() {
+    if(needClock) {
+        hitMessage.draw();
+        timerClock++;
+        if(timerClock == 300) timerClock = 0, needClock = false;
+        // console.log(timerClock);
+    }
+}
+//-попадание в цель 
+class HitTargetMessage {
+    constructor(id, color) {
+    this.id = id;
+    this.color = color;
+    }
+    draw() {
+    ctx.beginPath();
+    ctx.rect(100, 1100 - timerClock, 400, 100);
+    ctx.fillStyle = "black";
+    ctx.fill();
+    ctx.font = "30px Arial";
+    ctx.fillStyle = "white";
+    ctx.textAlign = 'center';
+    ctx.fillText("You killed:", 250, 1150 - timerClock);
+    ctx.closePath();
+    ctx.beginPath();
+    ctx.arc(400, 1150 - timerClock, 45, 0, 2 * Math.PI, false);
+    ctx.fillStyle = "pink";
+    ctx.fill();
+    ctx.lineWidth = 5;
+    ctx.strokeStyle = 'orange';
+    ctx.stroke();
+    ctx.font = "30px Arial";
+    ctx.fillStyle = "blue";
+    ctx.textAlign = 'center';
+    ctx.fillText(enemyReceived[this.id].text, 400, 1160 - timerClock);
+    ctx.closePath();
+    }
+};
+
 function DrawAll() {
     ctx.clearRect(-1000, -1000, 2000, 2000);
     ctx.translate(-canvasX,-canvasY);
@@ -540,7 +589,8 @@ function DrawAll() {
     Leap();
     Collision();
     gameAccepted();
+    internalClock();
     requestAnimationFrame(DrawAll);
 };
 //-запуск цикла всех функций и определения начальных координат игрока
-window.onload = DrawAll(), gameSetup();
+window.onload = gameSetup(), DrawAll();
